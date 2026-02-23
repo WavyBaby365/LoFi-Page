@@ -1,0 +1,122 @@
+/* ===== ШРИФТ TTF ===== */
+@font-face {
+  font-family: 'VCR';
+  src: url('fonts/VCROSDMonoNova.ttf') format('truetype');
+}
+
+#clockWidget {
+  top: 3vh;
+  left: 35vw;
+}
+
+#weatherWidget {
+  top: 75vh;
+  left: 5vw;
+}
+
+#playerWidget {
+  top: 75vh;
+  left: 75vw;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'VCR', monospace;
+  color: #f4c27a;
+}
+
+.date {
+  margin-top: 2vh;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+/* ===== ВИДЕО ФОН ===== */
+#bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -2;
+}
+
+/* затемнение */
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: -1;
+}
+
+/* ===== ВИДЖЕТЫ ===== */
+.widget {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transform-origin: top ;
+}
+
+.resize-handle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  right: 0;
+  bottom: 0;
+  cursor: se-resize;
+}
+
+/* начальные позиции */
+#clockWidget {
+  top: 10%;
+  left: 5%;
+}
+
+#weatherWidget {
+  top: 35%;
+  left: 5%;
+}
+
+#playerWidget {
+  #playerWidget {
+  top: 70%;
+  left: 75%;
+}
+}
+
+.time {
+  font-size: 90px;
+}
+
+.mini-player {
+  text-align: right;
+}
+
+button {
+  margin-top: 10px;
+  background: none;
+  border: 1px solid #f4c27a;
+  color: #f4c27a;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+button {
+  background: none;
+  border: 1px solid #f4c27a;
+  color: #f4c27a;
+  padding: 5px 10px;
+  cursor: pointer;
+}
