@@ -31,15 +31,47 @@ updateClock();
 
 
 // ===== ПОГОДА (пример: Екатеринбург) =====
-async function getWeather() {
-  const res = await fetch(
-    "https://api.open-meteo.com/v1/forecast?latitude=56.83&longitude=60.60&current_weather=true"
+function initWeather() {
+
+  if (!navigator.geolocation) {
+    console.log("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+
+      var lat = position.coords.latitude;
+      var lon = position.coords.longitude;
+
+      console.log("User coords:", lat, lon);
+
+      fetchWeather(lat, lon);
+
+    },
+    function(error) {
+      console.log("Geolocation denied");
+    }
   );
-  const data = await res.json();
-  document.getElementById("weather").textContent =
-    data.current_weather.temperature + "°C";
 }
-getWeather();
+
+function fetchWeather(lat, lon) {
+
+  fetch("https://api.open-meteo.com/v1/forecast?latitude=" +
+        lat +
+        "&longitude=" +
+        lon +
+        "&current_weather=true")
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+
+      var temp = Math.round(data.current_weather.temperature);
+      document.getElementById("temperature").innerHTML = temp + "°C";
+
+    });
+}
+
+initWeather();
 
 
 // ===== ПЛЕЕР =====
