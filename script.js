@@ -1,21 +1,29 @@
 // ===== ЧАСЫ =====
 function updateClock() {
-  const now = new Date();
+  var now = new Date();
 
-  const hours = now.getHours().toString().padStart(2, "0");
-  const minutes = now.getMinutes().toString().padStart(2, "0");
+  var hours = now.getHours();
+  var minutes = now.getMinutes();
 
-  document.getElementById("clock").textContent = `${hours}:${minutes}`;
+  if (hours < 10) hours = "0" + hours;
+  if (minutes < 10) minutes = "0" + minutes;
 
-  const options = {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  };
+  var timeString = hours + ":" + minutes;
 
-  const formattedDate = now.toLocaleDateString("en-us", options);
-  document.getElementById("date").textContent = formattedDate;
+  var day = now.getDate();
+  var month = now.getMonth() + 1;
+  var year = now.getFullYear();
+
+  if (day < 10) day = "0" + day;
+  if (month < 10) month = "0" + month;
+
+  var dateString = day + "." + month + "." + year;
+
+  var clockEl = document.getElementById("clock");
+  var dateEl = document.getElementById("date");
+
+  if (clockEl) clockEl.innerHTML = timeString;
+  if (dateEl) dateEl.innerHTML = dateString;
 }
 
 setInterval(updateClock, 1000);
@@ -35,60 +43,64 @@ getWeather();
 
 
 // ===== ПЛЕЕР =====
-const tracks = [
-  { title: "you have found the mythical seal cave", artist: "AZALI", src: "tracks/track1.mp3" },
-  { title: "Rainless (Hum)", artist: "Sohaoying", src: "tracks/track2.mp3" },
-  { title: "Cruising", artist: "Sohaoying", src: "tracks/track3.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track4.mp3" },
-  { title: "Sunset Logistics", artist: "Sohaoying", src: "tracks/track5.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track6.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track7.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track8.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track9.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track10.mp3" },
-  { title: "Cold Streets", artist: "Pixel Beats", src: "tracks/track2.mp3" },
-];
+// ===== ТРЕКИ =====
+document.addEventListener("DOMContentLoaded", function () {
 
-let currentTrack = 0;
-const audio = new Audio(tracks[currentTrack].src);
+  var tracks = [
+    { title: "Track 1", artist: "Artist 1", src: "tracks/track1.mp3" },
+    { title: "Track ", artist: "Artist 2", src: "tracks/track2.mp3" }
+  ];
 
-const titleEl = document.getElementById("track-title");
-const artistEl = document.getElementById("track-artist");
-const playBtn = document.getElementById("playBtn");
+  var audio = new Audio();
+  var currentTrack = 0;
+  var isPlaying = false;
 
-function loadTrack(i) {
-  audio.src = tracks[i].src;
-  titleEl.textContent = tracks[i].title;
-  artistEl.textContent = tracks[i].artist;
-}
-loadTrack(currentTrack);
+  var titleEl = document.getElementById("track-title");
+  var artistEl = document.getElementById("track-artist");
+  var playBtn = document.getElementById("playBtn");
+  var skipBtn = document.getElementById("skipBtn");
 
-audio.addEventListener("ended", () => {
-  currentTrack = (currentTrack + 1) % tracks.length;
-  loadTrack(currentTrack);
-  audio.play();
-});
-
-playBtn.addEventListener("click", () => {
-  if (audio.paused) {
-    audio.play();
-    playBtn.textContent = "⏸";
-  } else {
-    audio.pause();
-    playBtn.textContent = "▶";
+  function loadTrack(index) {
+    audio.src = tracks[index].src;
+    titleEl.innerHTML = tracks[index].title;
+    artistEl.innerHTML = tracks[index].artist;
   }
+
+  function togglePlay(e) {
+    e.stopPropagation();
+
+    if (isPlaying) {
+      audio.pause();
+      playBtn.innerHTML = "▶";
+      isPlaying = false;
+    } else {
+      audio.play();
+      playBtn.innerHTML = "⏸";
+      isPlaying = true;
+    }
+  }
+
+  function nextTrack(e) {
+    e.stopPropagation();
+
+    currentTrack++;
+    if (currentTrack >= tracks.length) currentTrack = 0;
+
+    loadTrack(currentTrack);
+    audio.play();
+    playBtn.innerHTML = "⏸";
+    isPlaying = true;
+  }
+
+  audio.addEventListener("ended", function () {
+    nextTrack({ stopPropagation: function(){} });
+  });
+
+  playBtn.addEventListener("click", togglePlay);
+  skipBtn.addEventListener("click", nextTrack);
+
+  loadTrack(0);
 });
-
-const skipBtn = document.getElementById("skipBtn");
-
-function nextTrack() {
-  currentTrack = (currentTrack + 1) % tracks.length;
-  loadTrack(currentTrack);
-  audio.play();
-  playBtn.textContent = "⏸";
-}
-
-skipBtn.addEventListener("click", nextTrack);
 
 // ===== ПЕРЕТАСКИВАНИЕ ВИДЖЕТОВ =====
 document.querySelectorAll(".widget").forEach(widget => {
@@ -99,7 +111,7 @@ document.querySelectorAll(".widget").forEach(widget => {
   let startX;
   let startScale = 1;
   let currentScale = 1;
-
+  
   const handle = widget.querySelector(".resize-handle");
 
   // ===== POINTER DOWN =====
@@ -114,7 +126,7 @@ document.querySelectorAll(".widget").forEach(widget => {
       offsetX = e.clientX - widget.offsetLeft;
       offsetY = e.clientY - widget.offsetTop;
     }
-
+    if (e.target.closest(".controls")) return;
     widget.setPointerCapture(e.pointerId);
   });
 
@@ -122,8 +134,20 @@ document.querySelectorAll(".widget").forEach(widget => {
   widget.addEventListener("pointermove", e => {
 
     if (isDragging) {
-      widget.style.left = (e.clientX - offsetX) + "px";
-      widget.style.top = (e.clientY - offsetY) + "px";
+      var newLeft = e.clientX - offsetX;
+var newTop = e.clientY - offsetY;
+
+var maxLeft = window.innerWidth - widget.offsetWidth;
+var maxTop = window.innerHeight - widget.offsetHeight;
+
+if (newLeft < 0) newLeft = 0;
+if (newTop < 0) newTop = 0;
+if (newLeft > maxLeft) newLeft = maxLeft;
+if (newTop > maxTop) newTop = maxTop;
+
+widget.style.left = newLeft + "px";
+widget.style.top = newTop + "px";
+      
     }
 
     if (isResizing) {
