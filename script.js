@@ -31,10 +31,10 @@ updateClock();
 
 
 // ===== ПОГОДА (пример: Екатеринбург) =====
-function initWeather() {
+window.addEventListener("load", function () {
 
   if (!navigator.geolocation) {
-    console.log("Geolocation not supported");
+    document.getElementById("temperature").innerHTML = "No geo";
     return;
   }
 
@@ -44,34 +44,31 @@ function initWeather() {
       var lat = position.coords.latitude;
       var lon = position.coords.longitude;
 
-      console.log("User coords:", lat, lon);
-
-      fetchWeather(lat, lon);
-
-    },
-    function(error) {
-      console.log("Geolocation denied");
-    }
-  );
-}
-
-function fetchWeather(lat, lon) {
-
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=" +
+      fetch(
+        "https://api.open-meteo.com/v1/forecast?latitude=" +
         lat +
         "&longitude=" +
         lon +
-        "&current_weather=true")
-    .then(function(res) { return res.json(); })
-    .then(function(data) {
+        "&current_weather=true"
+      )
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
 
-      var temp = Math.round(data.current_weather.temperature);
-      document.getElementById("temperature").innerHTML = temp + "°C";
+        var temp = Math.round(data.current_weather.temperature);
+        document.getElementById("temperature").innerHTML = temp + "°C";
 
-    });
-}
+      })
+      .catch(function(){
+        document.getElementById("temperature").innerHTML = "Weather error";
+      });
 
-initWeather();
+    },
+    function(error) {
+      document.getElementById("temperature").innerHTML = "Geo denied";
+    }
+  );
+
+});
 
 
 // ===== ПЛЕЕР =====
