@@ -76,8 +76,17 @@ window.addEventListener("load", function () {
 document.addEventListener("DOMContentLoaded", function () {
 
   var tracks = [
-    { title: "Track 1", artist: "Artist 1", src: "tracks/track1.mp3" },
-    { title: "Track ", artist: "Artist 2", src: "tracks/track2.mp3" }
+    { title: "Velvet Skies", artist: "calbyplugg", src: "tracks/track1.mp3" },
+    { title: "Echoes in Rain", artist: "calbyplugg", src: "tracks/track2.mp3" },
+    { title: "Neon Dreams", artist: "calbyplugg", src: "tracks/track3.mp3" },
+    { title: "Fading Memories", artist: "calbyplugg", src: "tracks/track4.mp3" },
+    { title: "Starlit", artist: "calbyplugg", src: "tracks/track5.mp3" },
+    { title: "Waves of Dawn", artist: "calbyplugg", src: "tracks/track6.mp3" },
+    { title: "Midnight", artist: "calbyplugg", src: "tracks/track7.mp3" },
+    { title: "Paper Planes", artist: "calbyplugg", src: "tracks/track8.mp3" },
+    { title: "Notes", artist: "calbyplugg", src: "tracks/track9.mp3" },
+    { title: "Floating Through", artist: "calbyplugg", src: "tracks/track10.mp3" }
+
   ];
 
   var audio = new Audio();
